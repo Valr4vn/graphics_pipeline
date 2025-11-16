@@ -18,13 +18,11 @@ class ObjParser {
   bool ParseAxisValues(std::istringstream& iss, int min_val_count);
 
   bool ParseFace(std::istringstream& iss, int min_val_count);
-  bool ParseFaceMaterial(std::istringstream& iss);
 
   static constexpr std::string_view kVertexCoordinates{"v"};
   static constexpr std::string_view kTextureCoordinates{"vt"};
   static constexpr std::string_view kVertexNormal{"vn"};
   static constexpr std::string_view kFace{"f"};
-  static constexpr std::string_view kFaceMaterial{"usemtl"};
 
   static constexpr char kFaceValueDelimiter{'/'};
 

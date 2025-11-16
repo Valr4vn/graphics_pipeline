@@ -7,10 +7,8 @@
 struct ObjFace {
   using FaceIndices = std::array<int, 3>;
 
-  std::string material_;
-
   // {vertex_index, texture_index, normal_index}
-  std::vector<FaceIndices> indices_;
+  std::vector<FaceIndices> indices;
 };
 
 #endif  // OBJFACE_H

@@ -1,5 +1,6 @@
 #include "graphics_pipeline/model/obj/ObjParser.h"
 
+#include <cerrno>
 #include <fstream>
 #include <iostream>
 #include <sstream>
@@ -32,11 +33,7 @@ bool ObjParser::ParseAxisValues(std::istringstream& iss, int min_val_count) {
 }
 
 bool ObjParser::ParseFace(std::istringstream& iss, int min_val_count) {
-  if (obj_model_data.faces.empty()) {
-    obj_model_data.faces.emplace_back();
-  }
-
-  ObjFace& obj_face = obj_model_data.faces.back();
+  ObjFace obj_face{};
   std::string indices_str{};
 
   int i = 0;
@@ -60,7 +57,7 @@ bool ObjParser::ParseFace(std::istringstream& iss, int min_val_count) {
       return false;
     }
 
-    obj_face.indices_.push_back(std::move(indices));
+    obj_face.indices.emplace_back(std::move(indices));
 
     ++i;
   }
@@ -70,20 +67,8 @@ bool ObjParser::ParseFace(std::istringstream& iss, int min_val_count) {
     return false;
   }
 
+  obj_model_data.faces.emplace_back(obj_face);
   return true;
-}
-
-bool ObjParser::ParseFaceMaterial(std::istringstream& iss) {
-  std::string material;
-
-  if (iss >> material) {
-    obj_model_data.faces.push_back(
-        {std::move(material), std::vector<ObjFace::FaceIndices>{}});
-    return true;
-  } else {
-    std::cerr << "Invalid material name.\n";
-    return false;
-  }
 }
 
 bool ObjParser::ParseObjLine(std::istringstream& iss, std::string_view type) {
@@ -98,8 +83,6 @@ bool ObjParser::ParseObjLine(std::istringstream& iss, std::string_view type) {
         iss, kVertexNormalMinValCount);
   } else if (type == kFace) {
     return ParseFace(iss, kFaceMinValCount);
-  } else if (type == kFaceMaterial) {
-    return ParseFaceMaterial(iss);
   } else {
     return true;
   }
@@ -108,17 +91,19 @@ bool ObjParser::ParseObjLine(std::istringstream& iss, std::string_view type) {
 std::optional<ObjModel> ObjParser::Parse(const std::string& obj_file_path) {
   std::ifstream obj_file;
 
-  // TODO Determine exceptions.
-  obj_file.exceptions(std::ifstream::badbit);
-
-  obj_file.open(obj_file_path);
-
-  std::string line{};
-  int line_count{1};
-
-  bool invalid_arguments = false;
-
   try {
+    obj_file.exceptions(std::ifstream::badbit);
+
+    obj_file.open(obj_file_path);
+
+    if (!obj_file.is_open()) {
+      throw std::system_error(errno, std::generic_category(),
+                              "Failed to open file '" + obj_file_path + "'");
+    }
+
+    std::string line{};
+    int line_count{1};
+
     while (std::getline(obj_file, line)) {
       std::istringstream iss(line);
       std::string type{};
@@ -132,16 +117,13 @@ std::optional<ObjModel> ObjParser::Parse(const std::string& obj_file_path) {
                     << ", File: " << obj_file_path << ").\n";
           return {};
         }
-      } else {
-        std::cerr << "Invalid line in .obj file. (Line: " << line_count
-                  << ", File: " << obj_file_path << ").\n";
-        return {};
       }
 
       ++line_count;
     }
-  } catch (const std::runtime_error& e) {
+  } catch (const std::system_error& e) {
     std::cerr << e.what() << "\n";
+    return {};
   }
 
   return ObjModel{std::move(obj_model_data)};

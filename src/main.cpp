@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "graphics_pipeline/model/obj/ObjParser.h"
+#include "graphics_pipeline/model_parser/obj/ObjParser.h"
 
 int main(int argc, char* argv[]) {
   if (argc != 2) {
@@ -10,7 +10,8 @@ int main(int argc, char* argv[]) {
 
   std::string obj_file_path{argv[1]};
 
-  std::optional<ObjModel> obj_model = ObjParser().Parse(obj_file_path);
+  std::optional<std::unique_ptr<IModel>> obj_model =
+      ObjParser().Parse(obj_file_path);
 
   return 0;
 }

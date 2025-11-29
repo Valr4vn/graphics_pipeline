@@ -7,9 +7,14 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 add_executable(${PROJECT_NAME}
                 src/main.cpp
-                src/model/obj/ObjModel.cpp include/graphics_pipeline/model/obj/ObjModel.h
-                src/model/obj/ObjParser.cpp include/graphics_pipeline/model/obj/ObjModel.h
-                include/graphics_pipeline/model/obj/ObjModelData.h
-                include/graphics_pipeline/model/obj/ObjFace.h)
+                src/core/pipeline/Renderer.cpp include/graphics_pipeline/core/pipeline/Renderer.h
+                src/core/scene/Camera.cpp include/graphics_pipeline/core/scene/Camera.h
+                src/core/scene/Scene.cpp include/graphics_pipeline/core/scene/Scene.h
+                src/model_parser/obj/ObjModel.cpp include/graphics_pipeline/model_parser/obj/ObjModel.h
+                src/model_parser/obj/ObjParser.cpp include/graphics_pipeline/model_parser/obj/ObjParser.h
+                include/graphics_pipeline/model_parser/obj/ObjModelData.h
+                include/graphics_pipeline/model_parser/obj/ObjFace.h
+                include/graphics_pipeline/core/model/IModel.h
+                include/graphics_pipeline/core/model/IModelParser.h)
 
 target_include_directories(${PROJECT_NAME} PUBLIC "include")

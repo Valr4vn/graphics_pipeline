@@ -3,13 +3,15 @@
 
 #include <optional>
 
-#include "graphics_pipeline/model/obj/ObjModel.h"
+#include "graphics_pipeline/core/model/IModelParser.h"
+#include "graphics_pipeline/model_parser/obj/ObjModel.h"
 
-class ObjParser {
+class ObjParser : public IModelParser {
  public:
   ObjParser() = default;
 
-  std::optional<ObjModel> Parse(const std::string& obj_file_path);
+  std::optional<std::unique_ptr<IModel>> Parse(
+      const std::string& obj_file_path);
 
  private:
   bool ParseObjLine(std::istringstream& iss, std::string_view type);
@@ -23,7 +25,6 @@ class ObjParser {
   static constexpr std::string_view kTextureCoordinates{"vt"};
   static constexpr std::string_view kVertexNormal{"vn"};
   static constexpr std::string_view kFace{"f"};
-
   static constexpr char kFaceValueDelimiter{'/'};
 
   static constexpr int kVertexCoordinatesMinValCount{3};

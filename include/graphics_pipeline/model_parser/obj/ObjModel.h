@@ -4,9 +4,10 @@
 #include <array>
 #include <vector>
 
-#include "graphics_pipeline/model/obj/ObjModelData.h"
+#include "graphics_pipeline/core/model/IModel.h"
+#include "graphics_pipeline/model_parser/obj/ObjModelData.h"
 
-class ObjModel {
+class ObjModel : public IModel {
  public:
   explicit ObjModel(ObjModelData data);
 

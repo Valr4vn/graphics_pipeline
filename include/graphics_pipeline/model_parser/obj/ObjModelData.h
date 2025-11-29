@@ -4,7 +4,7 @@
 #include <array>
 #include <vector>
 
-#include "graphics_pipeline/model/obj/ObjFace.h"
+#include "graphics_pipeline/model_parser/obj/ObjFace.h"
 
 struct ObjModelData {
   using VertexCoordinates = std::array<double, 4>;

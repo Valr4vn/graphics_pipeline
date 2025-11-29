@@ -1,4 +1,4 @@
-#include "graphics_pipeline/model/obj/ObjParser.h"
+#include "graphics_pipeline/model_parser/obj/ObjParser.h"
 
 #include <cerrno>
 #include <fstream>
@@ -88,7 +88,8 @@ bool ObjParser::ParseObjLine(std::istringstream& iss, std::string_view type) {
   }
 }
 
-std::optional<ObjModel> ObjParser::Parse(const std::string& obj_file_path) {
+std::optional<std::unique_ptr<IModel>> ObjParser::Parse(
+    const std::string& obj_file_path) {
   std::ifstream obj_file;
 
   try {
@@ -115,7 +116,7 @@ std::optional<ObjModel> ObjParser::Parse(const std::string& obj_file_path) {
         if (!parse_line_result) {
           std::cerr << "Invalid line format .obj file. (Line: " << line_count
                     << ", File: " << obj_file_path << ").\n";
-          return {};
+          return std::nullopt;
         }
       }
 
@@ -123,8 +124,8 @@ std::optional<ObjModel> ObjParser::Parse(const std::string& obj_file_path) {
     }
   } catch (const std::system_error& e) {
     std::cerr << e.what() << "\n";
-    return {};
+    return std::nullopt;
   }
 
-  return ObjModel{std::move(obj_model_data)};
+  return std::make_unique<ObjModel>(obj_model_data);
 }

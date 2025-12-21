@@ -12,12 +12,21 @@
 class Scene {
  public:
   std::optional<Camera&> camera() { return *camera_; }
+
   std::optional<IModel&> model(const std::string& model_name) {
     if (models_.find(model_name) != models_.end()) {
       return *(models_[model_name]);
     } else {
       return std::nullopt;
     }
+  }
+
+  void set_camera(std::unique_ptr<Camera> camera) {
+    camera_ = std::move(camera);
+  }
+
+  void set_model(const std::string& model_name, std::unique_ptr<IModel> model) {
+    models_[model_name] = std::move(model);
   }
 
  private:

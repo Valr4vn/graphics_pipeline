@@ -15,6 +15,10 @@ add_executable(${PROJECT_NAME}
                 include/graphics_pipeline/model_parser/obj/ObjModelData.h
                 include/graphics_pipeline/model_parser/obj/ObjFace.h
                 include/graphics_pipeline/core/model/IModel.h
-                include/graphics_pipeline/core/model/IModelParser.h)
+                include/graphics_pipeline/core/model/IModelParser.h
+                include/graphics_pipeline/core/pipeline/FrameBuffer.h
+                include/graphics_pipeline/frame_buffer/PNG.h
+                third_party/include/stb/stb_image_write.h)
 
 target_include_directories(${PROJECT_NAME} PUBLIC "include")
+target_include_directories(${PROJECT_NAME} SYSTEM PRIVATE "${CMAKE_SOURCE_DIR}/third_party/include")
